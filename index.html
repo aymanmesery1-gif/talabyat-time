@@ -59,7 +59,7 @@ select{font:inherit;font-size:1.02rem;background:var(--bg);color:var(--ink);bord
 .done small{color:var(--mute);font-weight:500;font-size:.82rem}
 .done .ok{color:var(--ok)} .done .late{color:var(--late)}
 .edit{font:inherit;font-size:.88rem;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--acc);border-radius:999px;padding:7px 16px;cursor:pointer}
-.err{color:var(--bad);font-size:.85rem;font-weight:600}
+.err{color:var(--bad);background:var(--late-bg);border-radius:8px;padding:8px 12px;font-size:.92rem;font-weight:700}
 button:focus-visible,select:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
 .foot{font-size:.8rem;color:var(--mute)}
 </style>
@@ -122,11 +122,11 @@ function render(){
       ${ERR[b.k]?`<div class="err">${esc(ERR[b.k])}</div>`:''}</div>`}).join('');
   $('list').querySelectorAll('[data-h]').forEach(x=>x.onchange=()=>{SCHED[x.dataset.h]=x.value;if(ERR[x.dataset.h]){delete ERR[x.dataset.h];render()}});
   $('list').querySelectorAll('[data-on]').forEach(x=>x.onclick=()=>save(x.dataset.on,'on',0));
-  $('list').querySelectorAll('[data-lt]').forEach(x=>x.onclick=()=>{const k=x.dataset.lt;if(need(k)==null)return;LATE[k]=!LATE[k];render()});
+  $('list').querySelectorAll('[data-lt]').forEach(x=>x.onclick=()=>{const k=x.dataset.lt;LATE[k]=!LATE[k];render()});   // show the hour choices right away; the scheduled hour is checked on save
   $('list').querySelectorAll('[data-lh]').forEach(x=>x.onclick=()=>save(x.dataset.lh,'late',+x.dataset.n));
   $('list').querySelectorAll('[data-e]').forEach(x=>x.onclick=()=>{EDIT[x.dataset.e]=1;render()});
 }
-function need(k){const v=SCHED[k]??'';if(v===''){ERR[k]='اختار موعد الوصول الأول';render();return null}return +v}
+function need(k){const v=SCHED[k]??'';if(v===''){ERR[k]='⬆ اختار موعد الوصول من فوق الأول، وبعدين دوس تاني';render();return null}return +v}
 async function save(k,st,late){
   const h=need(k);if(h==null)return;
   BUSY[k]=1;delete ERR[k];render();
